@@ -2,14 +2,37 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ProfilRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProfilRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     routePrefix="/admin",
+ *      normalizationContext={"groups"={"profil:read"}},
+ *      denormalizationContext={"groups"={"profil:write"}},
+ *      itemOperations={
+ *           "get_apprenants_id"={ 
+ *               "method"="PUT", 
+ *               "path"="/profils/{id}",
+ *                 "serializer"=false,
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(is_granted('ROLE_AdminSysteme') or is_granted('ROLE_AdminAgence'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *          "get",
+ *},
+ *      attributes={
+ *          "security"="is_granted('ROLE_AdminSysteme')",
+ *          "security_message"="Acces non autorisé",
+ *      }
+ * )
+ * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  */
 class Profil

@@ -2,14 +2,106 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 
 /**
+ * @ApiResource(
+ *      subresourceOperations= {
+ *         "depots_get_subresource"= {
+ *               "path"="/caissiers/{id}/depots",
+ *          },
+ *     },
+ *      collectionOperations={
+ *        "get"={
+ *               "method"="GET", 
+ *               "path"="/admin/users",
+ *                "security"="(is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *         "post"={
+ *               "method"="POST", 
+ *               "path"="/users",
+ *                "security"="(is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *      },
+ *      itemOperations={
+ *           "get_user_id"={ 
+ *               "method"="GET", 
+ *               "path"="/admin/users/{id}",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(object==user or is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *           "get_useragence_id"={ 
+ *               "method"="GET", 
+ *               "path"="/users/{id}/useragence",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(object==user or (is_granted('ROLE_AdminAgence') && object.agence ===user.agence) or is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *           "get_user_id_transactions"={ 
+ *               "method"="GET", 
+ *               "path"="/users/{id}/transactions",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "normalization_context"={"groups"={"get:trans"}},
+ *                "security"="(object==user or (is_granted('ROLE_AdminAgence') && object.agence ===user.agence) or is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *           "get_user_id_commissions"={ 
+ *               "method"="GET", 
+ *               "path"="/users/{id}/commissions",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "normalization_context"={"groups"={"get:com"}},
+ *                "security"="(object==user or (is_granted('ROLE_AdminAgence') && object.agence ===user.agence) or is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *           "delete_user_id"={ 
+ *               "method"="DELETE", 
+ *               "path"="/admin/users/{id}",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *           "block_user_id"={ 
+ *               "method"="DELETE", 
+ *               "path"="/admin/users/{id}/block",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "security"="(is_granted('ROLE_AdminSysteme') and object!==user)",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *       },
+ *       normalizationContext={"groups"={"user:read","resumeUser"}},
+ *       denormalizationContext={"groups"={"user:write"}},
+ *       attributes={
+ *          "security"="is_granted('ROLE_AdminSysteme') or is_granted('ROLE_AdminAgence')",
+ *          "security_message"="Acces non autorisé",
+ *          "pagination_enabled"=true,
+ *          "pagination_client_items_per_page"=true, 
+ *          "pagination_items_per_page"=5}
+ *    
+ * )
+ * @ApiFilter(BooleanFilter::class, properties={"isDeleted"})
+ * @ApiFilter(SearchFilter::class, properties={"id":"exact","profil.libelle": "exact"})
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @Orm\Table("`user`")
  */
 class User implements UserInterface
 {
@@ -22,37 +114,44 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"user:read", "user:write","resumeUser"})
+     * @Assert\NotBlank
      */
     private $username;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    // /**
+    //  * @ORM\Column(type="json")
+    //  */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups({ "user:write"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user:read", "user:write"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"user:read", "user:write"})
      */
     private $lastname;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"user:read", "user:write"})
      */
     private $email;
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
+     * @Groups({"user:read", "user:write"})
      */
     private $profil;
 
@@ -60,22 +159,35 @@ class User implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity=Agence::class, inversedBy="users")
      */
-    private $agence;
+    public $agence;
 
     /**
      * @ORM\OneToMany(targetEntity=Depot::class, mappedBy="user")
+     * @\ApiPlatform\Core\Annotation\ApiSubresource()
      */
     private $depots;
 
     /**
      * @ORM\OneToMany(targetEntity=Transaction::class, mappedBy="agentDepot")
+     * @Groups({"get:trans","get:com"})
      */
     private $depotAgents;
 
     /**
      * @ORM\OneToMany(targetEntity=Transaction::class, mappedBy="agentRetrait")
+     * @Groups({"get:trans","get:com"})
      */
     private $retraitAgents;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDeleted = false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isBlocked = false;
 
     public function __construct()
     {
@@ -114,7 +226,7 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = 'ROLE_'.$this->profil->getLibelle();
 
         return array_unique($roles);
     }
@@ -308,6 +420,30 @@ class User implements UserInterface
                 $retraitAgent->setAgentRetrait(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(bool $isDeleted): self
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getIsBlocked(): ?bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

@@ -1,0 +1,9 @@
+<ion-item class="full-width">
+  <ion-label [position]="field.position">{{field.label}}</ion-label>
+  <ion-input [type]="field.inputType"  [formControlName]="field.name" [placeholder]="field.label"></ion-input>
+  <ng-container **ngFor="let validation of field.validations">
+    <div *ngIf="group.get(field.name).hasError(validation.name)">
+      {{ validation.message}}
+    </div>
+  </ng-container>
+</ion-item>

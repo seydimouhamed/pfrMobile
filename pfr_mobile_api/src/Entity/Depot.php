@@ -7,7 +7,29 @@ use App\Repository\DepotRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     routePrefix="/caissiers",
+ *      subresourceOperations= {
+ *         "api_users_depots_get_subresource"= {
+ *                "security"="(is_granted('ROLE_AdminSysteme') or object.user === user)",
+ *                  "security_message"="Acces non autorisé"
+ *          },
+ *     },
+ *      collectionOperations={
+ *        "get"={
+ *               "method"="GET", 
+ *               "path"="/depots",
+ *                "security"="(is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *         "post"={
+ *               "method"="POST", 
+ *               "path"="/depots",
+ *                "security"="(is_granted('ROLE_AdminSysteme') or is_granted('ROLE_Caissier'))",
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *      },
+ * )
  * @ORM\Entity(repositoryClass=DepotRepository::class)
  */
 class Depot
@@ -38,6 +60,11 @@ class Depot
      * @ORM\ManyToOne(targetEntity=Compte::class, inversedBy="depots")
      */
     private $compte;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isCanceled= false;
 
     public function getId(): ?int
     {
@@ -88,6 +115,18 @@ class Depot
     public function setCompte(?Compte $compte): self
     {
         $this->compte = $compte;
+
+        return $this;
+    }
+
+    public function getIsCanceled(): ?bool
+    {
+        return $this->isCanceled;
+    }
+
+    public function setIsCanceled(?bool $isCanceled): self
+    {
+        $this->isCanceled = $isCanceled;
 
         return $this;
     }

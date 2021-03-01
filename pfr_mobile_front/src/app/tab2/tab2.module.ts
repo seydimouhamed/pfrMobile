@@ -1,3 +1,4 @@
+import { DynamicModule } from './../components/dynamic.module';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
@@ -14,6 +15,7 @@ import { Tab2PageRoutingModule } from './tab2-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
+    DynamicModule,
     Tab2PageRoutingModule
   ],
   declarations: [Tab2Page]

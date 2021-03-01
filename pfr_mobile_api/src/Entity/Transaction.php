@@ -2,12 +2,49 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\TransactionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TransactionRepository;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      collectionOperations={
+ *        "get"={
+ *               "method"="GET", 
+ *               "path"="/admin/transactions",
+ *                "security"="(is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *        "get_part_etat"={
+ *               "method"="GET", 
+ *               "path"="/admin/transactions/part_etat",
+ *                "security"="(is_granted('ROLE_AdminSysteme'))",
+ *                "normalization_context"={"groups"={"get:partetat"}},
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *         "post_transaction"={
+ *               "method"="POST", 
+ *               "path"="/user/transactions",
+ *                "security"="(is_granted('ROLE_AdminAgence') or is_granted('ROLE_UserAgence'))",
+ *                "denormalization_context"={"groups"={"post:trans","post:client"}},
+ *                  "security_message"="Acces non autorisé"
+ *         },
+ *      },
+ *      itemOperations={
+ *           "put_transaction_id"={ 
+ *               "method"="PUT", 
+ *               "path"="/user/transactions/{id}",
+ *                 "serializer"=false,
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "denormalization_context"={"groups"={"post:trans","post:client"}},
+ *                "security"="(is_granted('ROLE_AdminAgence') or is_granted('ROLE_UserAgence'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *          "get",
+ *       },
+ * )
  * @ORM\Entity(repositoryClass=TransactionRepository::class)
  */
 class Transaction
@@ -16,6 +53,7 @@ class Transaction
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get:trans"})
      */
     private $id;
 
@@ -26,21 +64,25 @@ class Transaction
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"post:trans"})
+     * @Groups({"get:trans","get:partetat"})
      */
     private $montant;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get:trans","get:com","get:partetat"})
      */
     private $dateAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    private $type="depot";
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"get:partetat"})
      */
     private $part_etat;
 
@@ -51,16 +93,19 @@ class Transaction
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"get:trans","get:com"})
      */
     private $part_depot;
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"get:trans","get:com"})
      */
     private $part_retrait;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"get:trans","get:com"})
      */
     private $retraitAt;
 
@@ -70,12 +115,14 @@ class Transaction
     private $compte;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="retraitClients")
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="retraitClients", cascade={"persist"})
+     * @Groups({"post:client","put:trans"})
      */
     private $retraitClient;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="depotClients")
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="depotClients", cascade={"persist"})
+     * @Groups({"post:client"})
      */
     private $depotClient;
 
@@ -88,6 +135,11 @@ class Transaction
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="retraitAgents")
      */
     private $agentRetrait;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $frais;
 
 
 
@@ -261,6 +313,18 @@ class Transaction
     public function setAgentRetrait(?User $agentRetrait): self
     {
         $this->agentRetrait = $agentRetrait;
+
+        return $this;
+    }
+
+    public function getFrais(): ?float
+    {
+        return $this->frais;
+    }
+
+    public function setFrais(float $frais): self
+    {
+        $this->frais = $frais;
 
         return $this;
     }

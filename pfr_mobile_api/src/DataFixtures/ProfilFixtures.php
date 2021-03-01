@@ -16,14 +16,13 @@ class ProfilFixtures extends Fixture
     
     public function load(ObjectManager $manager)
     {
-        $libelles = ["AdminAgence","AdminSysteme","Caisser","UserAgence"];
+        $libelles = ["AdminAgence","AdminSysteme","Caissier","UserAgence"];
 
 
         foreach($libelles as $k => $lib)
         {
             $profil = new Profil();
             $profil-> setLibelle($lib);
-            $profil->setArchivage(0);
             $manager->persist($profil);
             $this->addReference(self::getReferenceKey($k), $profil);
 

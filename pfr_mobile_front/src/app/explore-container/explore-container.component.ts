@@ -7,9 +7,15 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ExploreContainerComponent implements OnInit {
   @Input() name: string;
+  @Input() icone: string;
+  @Input() height: string;
 
-  constructor() { }
-
+  constructor() {
+    this.changeHeight( 'grand');
+  }
+ changeHeight(height){
+  document.documentElement.style.setProperty('--dynamic-height', height);
+ }
   ngOnInit() {}
 
 }
