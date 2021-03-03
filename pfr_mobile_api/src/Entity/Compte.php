@@ -57,7 +57,7 @@ class Compte
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"post:compte"})
+     * @Groups({"post:compte","util"})
      */
     private $solde;
 

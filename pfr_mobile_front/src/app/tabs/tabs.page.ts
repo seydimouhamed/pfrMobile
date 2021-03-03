@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Data } from '@angular/router';
+import { AuthenticationService } from '../connexion/authentication.service';
 
 @Component({
   selector: 'app-tabs',
@@ -6,7 +8,33 @@ import { Component } from '@angular/core';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
-isAdmin = true;
-  constructor() {}
+isAdmin = false;
+
+  constructor(
+    private authService: AuthenticationService,
+    private router: ActivatedRoute) {
+    this.authService.currentRolesSubject.subscribe( bool =>
+      {
+        this.isAdmin = bool;
+      });
+  }
+
+
+  ngOnInit(): void {
+    this.router.data.subscribe(
+       (data: Data ) => {
+         const CURRENTUSER = 'currentUser';
+
+         const user = data[CURRENTUSER]['hydra:member'][0];
+         // console.log(user);
+
+         this.authService.currentUserSubject.next(user);
+       });
+  }
+
+
+  reload(){
+    location.reload();
+  }
 
 }

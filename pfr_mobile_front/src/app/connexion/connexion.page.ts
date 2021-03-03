@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core'
+import { AuthenticationService } from './authentication.service'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-connexion',
@@ -7,12 +11,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConnexionPage implements OnInit {
 
-  constructor() { }
+  form: FormGroup;
+  constructor(private authService: AuthenticationService, private fb: FormBuilder, private route: Router) { }
 
   ngOnInit() {
   }
   todo = {}
   logForm() {
-    console.log(this.todo)
+    this.authService.login('adminagence1', 'passe123')
+      .subscribe(role => {
+        this.navigate(role);
+      },
+      er => {
+        console.log(er);
+      }
+      );
+    // this.route.navigate(['tabs']);
+    // alert( this.authService.testStore());
+    console.log(this.todo);
+  }
+
+  onSubmit(){
+    alert( this.authService.testStore());
+  }
+
+  navigate(role): void {
+      this.route.navigate(['/tabs/home']);
   }
 }

@@ -34,7 +34,8 @@ final class DepotDataPersister implements ContextAwareDataPersisterInterface
             $data= $this->service->postDepot($data);
         }
         if(isset($context['item_operation_name']) and $context['item_operation_name'] === 'put'){
-             $previousMontant = $this->request->get('previous_data')->getMontant();
+            dd('ici');
+            $previousMontant = $this->request->get('previous_data')->getMontant();
            
             $this->service->putDepot($data, $previousMontant);
         }

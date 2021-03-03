@@ -1,0 +1,41 @@
+.tab-header{
+  background-color: white;
+  border-radius: 20px;
+}
+
+.button{
+
+  padding: 20px;
+  background-color:#FA4A0C;
+  color: white;
+  font-size: 25px;
+  width: 80%;
+  margin-left: 10%;
+  border-radius: 30px;
+}
+
+// .p_bottom {
+//   position: fixed;
+//   left: 0;
+//   bottom: 0px;
+//   right: 0;
+// }
+.w_80{
+  width: 80%;
+  margin-left: 10%;
+}
+.test{
+  background-color: red;
+  .w_40{
+    width: 40%;
+
+
+
+  }
+   .m-r{
+      float: right;
+    }
+}
+ion-content{
+  --ion-width: 100%;
+}

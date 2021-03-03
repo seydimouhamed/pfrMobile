@@ -1,0 +1,15 @@
+
+  <ion-card [class]="'card '+ ' height1'">
+    <div class="test">
+      <div>
+        <img class="img" src="../../assets/img/logo2.png">
+      </div>
+      <div>
+      <div class="bottom-0">
+        <ion-icon *ngIf="icone" [name]="icone" class="icon"> </ion-icon> <span class="name">{{name}}</span>
+        <hr/>
+      </div>
+      </div>
+     </div>
+     <ion-icon name="home-sharp" *ngIf="home" class="home-icon" [routerLink]="'/tabs'"></ion-icon>
+  </ion-card>

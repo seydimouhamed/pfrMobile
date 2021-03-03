@@ -29,9 +29,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *                "security"="(is_granted('ROLE_AdminSysteme'))",
  *                  "security_message"="Acces non autorisé"
  *         },
+ *           "get_current_user"={ 
+ *               "method"="GET", 
+ *               "path"="/admin/users/current",
+ *                "normalization_context"={"groups"={"user:read","util"}},
+ *                  "security_message"="Acces non autorisé",
+ *          },
  *         "post"={
  *               "method"="POST", 
- *               "path"="/users",
+ *               "path"="/admin/users",
  *                "security"="(is_granted('ROLE_AdminSysteme'))",
  *                  "security_message"="Acces non autorisé"
  *         },
@@ -158,6 +164,7 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Agence::class, inversedBy="users")
+     * @Groups({"util"})
      */
     public $agence;
 
@@ -188,6 +195,11 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isBlocked = false;
+
+    // /**
+    //  * @ORM\Column(type="blob", nullable=true)
+    //  */
+    // private $avatar;
 
     public function __construct()
     {
@@ -447,4 +459,16 @@ class User implements UserInterface
 
         return $this;
     }
+
+    // public function getAvatar()
+    // {
+    //     return $this->avatar;
+    // }
+
+    // public function setAvatar($avatar): self
+    // {
+    //     $this->avatar = $avatar;
+
+    //     return $this;
+    // }
 }

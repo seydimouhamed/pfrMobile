@@ -1,0 +1,155 @@
+@mixin agrandissment {
+    height: 45%;
+    .img{
+      left:31%;
+      width: 110px;
+      height: 120px;
+    }
+    .bottom-0{
+      font-size: 18px;
+      top:87.8%;
+    }
+}
+@mixin retrecissment {
+  height: 25%;
+  .img{
+    left:38%;
+    width: 60px;
+    height: 70px;
+  }
+  .bottom-0{
+    font-size: 14px;
+    top:82.8%;
+  }
+}
+
+@mixin dynamic ($type) {
+
+  @if $type == 'aga' {
+  height: 25%;
+  .img{
+    left:38%;
+    width: 60px;
+    height: 70px;
+  }
+  .bottom-0{
+    font-size: 14px;
+    top:82.8%;
+  }
+  }
+
+}
+
+// $dynamic-height: var(--dynamic-height);
+// :root{
+//   --dynamic-height: 45%;
+// }
+$dynamic-height: var(--dynamic-height);
+$d-height : var(--d-height);
+$d-left : var(--d-left );
+$d-i-width: var(--d-i-width);
+$d-i-height:var(--d-i-height);
+$ft-sz:var(--ft-sz);
+$d-top:var(--d-top);
+$font-color: var(--font-color);
+$d-topimg: var(--d-topimg);
+:root{
+  --d-height: 20%;
+  --d-left : 38%;
+  --d-i-width: 60px;
+  --d-i-height: 70px;
+  --ft-sz: 14px;
+  --d-top: 82.8%;
+  --d-topimg:40%;
+}
+$test : 'petit';
+
+
+
+#container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+  color: #8c8c8c;
+
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+.card{
+  position: relative;
+  text-align: center;
+  background-color: white;
+  margin: 0px;
+  border-radius: 0px 0px 30px 30px;
+//@error "Property #{var(--test)} must be either top or bottom.";
+  height: $d-height;
+    // @include agrandissment;
+
+  // @else {
+  //   @include retrecissment;
+  // }
+  // height: $dynamic-height;
+
+
+  .img{
+    width: $d-i-width;
+    height: $d-i-height;
+    text-align: center;
+
+    position: absolute;
+    left:$d-left;
+    right: 0;
+    top: $d-topimg;
+    transform: translateY(-50%);
+  }
+  .bottom-0{
+    position: absolute;
+    text-align: center;
+    left:0;
+    right:0;
+    color:black;
+    font-size: $ft-sz;
+    top: $d-top;
+    // border-bottom: 3px solid yellow;
+    // background-color: yellowgreen;
+
+  }
+  hr{
+    background-color:#07AEEF;
+    height: 4px;
+    width: 150px;
+    border-radius: 2px;
+     // border: 2px solid green;
+  }
+}
+
+.icon{
+  width: 30px;
+  color:#07AEEF;
+}
+
+.home-icon{
+  position: absolute;
+  color:#07AEEF;
+  width: 25px;
+  height: 25px;
+  left: 20px;
+  top:40px;
+}

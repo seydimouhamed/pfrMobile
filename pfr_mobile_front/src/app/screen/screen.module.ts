@@ -15,6 +15,7 @@ import { ScreenPage } from './screen.page';
     IonicModule,
     ScreenPageRoutingModule
   ],
-  declarations: [ScreenPage]
+  declarations: [ScreenPage],
+  exports:[ScreenPage]
 })
 export class ScreenPageModule {}

@@ -1,5 +1,7 @@
 {
   "name": "pfr_mobile_front",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

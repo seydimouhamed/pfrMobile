@@ -94,7 +94,7 @@ class Agence
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"post:agence"})
+     * @Groups({"post:agence","util"})
      */
     private $nom;
 
@@ -118,7 +118,7 @@ class Agence
 
     /**
      * @ORM\OneToOne(targetEntity=Compte::class, cascade={"persist", "remove"})
-     * @Groups({"post:agence"})
+     * @Groups({"post:agence","util"})
      */
     private $compte;
 

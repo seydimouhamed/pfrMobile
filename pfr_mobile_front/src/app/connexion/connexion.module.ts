@@ -1,20 +1,27 @@
-import { ExploreContainerComponentModule } from './../explore-container/explore-container.module';
+import { RouterModule } from '@angular/router';
+import { IonicStorageModule } from '@ionic/storage';
+import { PanelComponentModule } from '../panel/panel.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
 import { ConnexionPageRoutingModule } from './connexion-routing.module';
 
 import { ConnexionPage } from './connexion.page';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    IonicStorageModule,
+    HttpClientModule,
     IonicModule,
-    ExploreContainerComponentModule,
+    PanelComponentModule,
     ConnexionPageRoutingModule
   ],
   declarations: [ConnexionPage]

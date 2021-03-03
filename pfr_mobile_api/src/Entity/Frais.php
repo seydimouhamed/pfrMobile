@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\FraisRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FraisRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 
 /**
  * @ApiResource()
+ * @ApiFilter(RangeFilter::class, properties={"montant"})
+ * @ApiFilter(OrderFilter::class, properties={ "montant"}, arguments={"orderParameterName"="order"})
  * @ORM\Entity(repositoryClass=FraisRepository::class)
  */
 class Frais
