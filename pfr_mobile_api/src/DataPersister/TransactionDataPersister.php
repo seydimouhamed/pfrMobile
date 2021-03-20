@@ -31,19 +31,25 @@ final class TransactionDataPersister implements ContextAwareDataPersisterInterfa
 
     public function persist($data, array $context = [])
     {
+        // dd($data);
         if(
             isset($context['item_operation_name']) && 
             $context['item_operation_name'] === 'put_transaction_id'){
             $data= $this->service->putTransaction($data);
+            $this->em->persist($data);
+            $this->em->flush();
+            $this->service->sendSMSRetrait($data);
         }
         if(
             isset($context['collection_operation_name']) &&
             $context['collection_operation_name'] === 'post_transaction'){
+
             $data= $this->service->postTransaction($data);
+            $this->em->persist($data);
+            $this->em->flush();
+            $this->service->sendSMSDepot($data);
         }
         //dd($data);
-        $this->em->persist($data);
-        $this->em->flush();
         return $data;
     }
 

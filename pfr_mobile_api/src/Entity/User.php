@@ -32,7 +32,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *           "get_current_user"={ 
  *               "method"="GET", 
  *               "path"="/admin/users/current",
- *                "normalization_context"={"groups"={"user:read","util"}},
+ *                "normalization_context"={"groups"={"user:read","util", "profil:read"}},
  *                  "security_message"="Acces non autorisé",
  *          },
  *         "post"={
@@ -48,7 +48,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *               "path"="/admin/users/{id}",
  *                "defaults"={"id"=null},
  *                "requirements"={"id"="\d+"},
- *                "security"="(object==user or is_granted('ROLE_AdminSysteme'))",
+ *                "security"="(object==user  or (is_granted('ROLE_AdminAgence') && object.agence ===user.agence) or is_granted('ROLE_AdminSysteme'))",
  *                  "security_message"="Acces non autorisé",
  *          },
  *           "get_useragence_id"={ 
@@ -69,7 +69,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *                  "security_message"="Acces non autorisé",
  *          },
  *           "get_user_id_commissions"={ 
- *               "method"="GET", 
+ *               "method"="GET",
  *               "path"="/users/{id}/commissions",
  *                "defaults"={"id"=null},
  *                "requirements"={"id"="\d+"},
@@ -88,7 +88,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *           "block_user_id"={ 
  *               "method"="DELETE", 
  *               "path"="/admin/users/{id}/block",
- *                "defaults"={"id"=null},
+ *               "defaults"={"id"=null},
  *                "requirements"={"id"="\d+"},
  *                "security"="(is_granted('ROLE_AdminSysteme') and object!==user)",
  *                  "security_message"="Acces non autorisé",
@@ -97,7 +97,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
  *       normalizationContext={"groups"={"user:read","resumeUser"}},
  *       denormalizationContext={"groups"={"user:write"}},
  *       attributes={
- *          "security"="is_granted('ROLE_AdminSysteme') or is_granted('ROLE_AdminAgence')",
  *          "security_message"="Acces non autorisé",
  *          "pagination_enabled"=true,
  *          "pagination_client_items_per_page"=true, 
@@ -115,6 +114,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"user:read","resumeUser"})
      */
     private $id;
 

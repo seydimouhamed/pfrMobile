@@ -16,6 +16,7 @@ export class AuthenticationService {
   public currentUser: Observable<User>;
 
   public currentRolesSubject = new BehaviorSubject<boolean>(false);
+  public currentRole: Observable<boolean>;
 
   tokenInfo: any;
 
@@ -28,13 +29,18 @@ export class AuthenticationService {
   ) {
     this.currentUserSubject = new BehaviorSubject<User>(null);
     this.currentUser = this.currentUserSubject.asObservable();
+
+
+    this.currentRolesSubject = new BehaviorSubject<boolean>(false);
+    this.currentRole = this.currentRolesSubject.asObservable();
+
    }
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string): any{
-    return this.http.post<any>(`${this.apiUrl}login`, { username, password })
+  login(data): any{
+    return this.http.post<any>(`${this.apiUrl}login`, data)
             .pipe(map(resp => {
               // this.storage.set('name', 'value');
               // console.log(resp.token);
@@ -75,7 +81,7 @@ export class AuthenticationService {
   }
 
  getToken(){
-// $data='';
+  // $data='';
   // this.storage.get('token').then( data => {
   //   return data;
   // });

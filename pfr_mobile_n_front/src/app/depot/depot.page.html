@@ -1,0 +1,112 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Tab 2
+    </ion-title>
+  </ion-toolbar>
+</ion-header> -->
+<ion-content [fullscreen]="true">
+  <app-panel name="Dépot" index=0 home="true" icone="return-up-forward-outline"></app-panel>
+  <!-- <ion-header class="ion-no-border">
+    <ion-toolbar>
+      <ion-title>Super Tabs</ion-title>
+    </ion-toolbar>
+  </ion-header> -->
+
+  <br>
+  <super-tabs>
+    <super-tabs-toolbar class="tab-header" slot="top">
+      <super-tab-button>
+        <ion-label>Emetteur</ion-label>
+      </super-tab-button>
+      <super-tab-button>
+        <ion-label>Bénéficiaire</ion-label>
+      </super-tab-button>
+    </super-tabs-toolbar>
+    <super-tabs-container>
+      <super-tab>
+        <ion-content>
+          <div class="w_80">
+            <form [formGroup]="emetForm">
+              <ion-item>
+                <ion-label position="floating">N° CNI</ion-label>
+                <br>
+                <ion-input type="text"  name="cni" formControlName="cni" class="input"></ion-input>
+                <small class="red" *ngIf="submitted && f1.cni.errors">le CNI est obligatoire</small>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating" >Nom</ion-label>
+                <br>
+                <ion-input type="text"  name="nom" formControlName="nom" class="input"></ion-input>
+                <small class="red" *ngIf="submitted && f1.nom.errors">le nom est obligatoire</small>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Prénom</ion-label>
+                <br>
+                <ion-input type="text"  name="prenom" formControlName="prenom" class="input"></ion-input>
+                <small class="red" *ngIf="submitted && f1.prenom.errors">le prénom est obligatoire</small>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Téléphone</ion-label>
+                <br>
+                <ion-input type="text"  name="fistname" formControlName="telephone" class="input"></ion-input>
+                <small class="red" *ngIf="submitted && f1.telephone.errors">le numéro  est obligatoire</small>
+              </ion-item>
+            </form >
+              <ion-item>
+                <ion-label position="floating" >Montant</ion-label>
+                <br>
+                <ion-input type="number" [formControl]="montantCtrl" (keyup)="getFrais()" name="nom"  class="input"></ion-input>
+              </ion-item>
+              <div class="test">
+                <div class="w_40 m-r">
+                  <ion-item>
+                    <ion-label position="floating" >Frais</ion-label>
+                    <br>
+                    <ion-input type="text" [formControl]="fraisCtrl" name="telephone"  class="input"></ion-input>
+                  </ion-item>
+                </div>
+              </div>
+              <br>
+              <br>
+              <ion-item>
+                <ion-label position="floating">Total</ion-label>
+                <br>
+                <ion-input type="number" [formControl]="totalCtrl" (keyup)="getMontant()" name="total"  class="input"></ion-input>
+              </ion-item>
+              <button ion-button class="button p_bottom"  block>Suivant</button>
+
+          </div>
+        </ion-content>
+      </super-tab>
+      <super-tab>
+        <ion-content>
+          <br><br>
+          <div class="w_80">
+            <form  [formGroup]="benForm">
+              <ion-item>
+                <ion-label position="floating">Prénom</ion-label>
+                <br>
+                <ion-input type="text"  name="fistname" formControlName="prenom" class="input"></ion-input>
+              </ion-item>
+              <br>
+            <ion-item>
+              <ion-label position="floating">Nom</ion-label>
+              <br>
+              <ion-input type="text"  name="nom" formControlName="nom" class="input"></ion-input>
+            </ion-item>
+            <br>
+          <ion-item>
+            <ion-label position="floating">Téléphone</ion-label>
+            <br>
+            <ion-input type="text"  name="telephone" formControlName="telephone" class="input"></ion-input>
+          </ion-item>
+                <br>
+              <button ion-button class="button p_bottom" (click)="submitForm()"  block>Valider</button>
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+    </super-tabs-container>
+  </super-tabs>
+</ion-content>

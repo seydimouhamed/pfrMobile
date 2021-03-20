@@ -15,6 +15,7 @@ isAdmin = false;
     private router: ActivatedRoute) {
     this.authService.currentRolesSubject.subscribe( bool =>
       {
+       // alert(bool);
         this.isAdmin = bool;
       });
   }
@@ -27,7 +28,12 @@ isAdmin = false;
 
          const user = data[CURRENTUSER]['hydra:member'][0];
          // console.log(user);
-
+         if (user.profil.libelle === 'AdminAgence'){
+             this.authService.currentRolesSubject.next(true);
+         }
+         else{
+          this.authService.currentRolesSubject.next(false);
+         }
          this.authService.currentUserSubject.next(user);
        });
   }

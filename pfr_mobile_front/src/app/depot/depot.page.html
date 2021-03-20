@@ -48,7 +48,7 @@
                 <ion-input type="text"  name="fistname" formControlName="telephone"></ion-input>
                 <small class="red" *ngIf="submitted && f1.telephone.errors">le numéro  est obligatoire</small>
               </ion-item>
-            </form>
+            </form >
               <ion-item>
                 <ion-label position="floating" >Montant</ion-label>
                 <ion-input type="number" [formControl]="montantCtrl" (keyup)="getFrais()" name="nom"></ion-input>
@@ -76,20 +76,20 @@
         <ion-content>
           <br><br>
           <div class="w_80">
-            <form >
+            <form  [formGroup]="benForm">
               <ion-item>
                 <ion-label position="floating">Prénom</ion-label>
-                <ion-input type="text"  name="fistname"></ion-input>
+                <ion-input type="text"  name="fistname" formControlName="prenom"></ion-input>
               </ion-item>
               <br>
             <ion-item>
               <ion-label position="floating">Nom</ion-label>
-              <ion-input type="text"  name="nom"></ion-input>
+              <ion-input type="text"  name="nom" formControlName="nom"></ion-input>
             </ion-item>
             <br>
           <ion-item>
             <ion-label position="floating">Téléphone</ion-label>
-            <ion-input type="text"  name="telephone"></ion-input>
+            <ion-input type="text"  name="telephone" formControlName="telephone"></ion-input>
           </ion-item>
                 <br>
               <button ion-button class="button p_bottom" (click)="submitForm()"  block>Valider</button>

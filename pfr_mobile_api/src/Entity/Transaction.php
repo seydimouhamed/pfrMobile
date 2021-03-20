@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TransactionRepository;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ApiResource(
@@ -15,6 +17,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *               "path"="/admin/transactions",
  *                "security"="(is_granted('ROLE_AdminSysteme'))",
  *                  "security_message"="Acces non autorisé"
+ *         },
+ *        "get_transactions"={
+ *               "method"="GET", 
+ *               "path"="/user/transactions",
+ *               "controller"="App\Controller\GetTransactionController",
+ *                "normalization_context"={"groups"={"get:retrait", "post:client"}},
+ *                "security"="(is_granted('ROLE_AdminAgence') or is_granted('ROLE_UserAgence') )",
+ *                  "security_message"="Acces non autorisé",
  *         },
  *        "get_part_etat"={
  *               "method"="GET", 
@@ -46,6 +56,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *       },
  * )
  * @ORM\Entity(repositoryClass=TransactionRepository::class)
+ * @ApiFilter(SearchFilter::class, properties={"id":"exact","code": "exact"})
  */
 class Transaction
 {
@@ -53,7 +64,7 @@ class Transaction
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get:trans"})
+     * @Groups({"get:trans", "get:retrait"})
      */
     private $id;
 
@@ -65,20 +76,20 @@ class Transaction
     /**
      * @ORM\Column(type="float")
      * @Groups({"post:trans"})
-     * @Groups({"get:trans","get:partetat"})
+     * @Groups({"get:trans","get:partetat","get:retrait"})})
      */
     private $montant;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"get:trans","get:com","get:partetat"})
+     * @Groups({"get:trans","get:com","get:partetat","get:retrait",  "getcom"})
      */
     private $dateAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @Groups({"get:trans","get:retrait"})
      */
-    private $type="depot";
+    private $type;
 
     /**
      * @ORM\Column(type="float")
@@ -93,36 +104,41 @@ class Transaction
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"get:trans","get:com"})
+     * @Groups({"get:trans","get:com", "getcom"})
      */
     private $part_depot;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups({"get:trans","get:com"})
+     * @Groups({"get:trans","get:com","get:retrait", "getcom"})
      */
     private $part_retrait;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"get:trans","get:com"})
+     * @Groups({"get:trans","get:com", "getcom"})
      */
     private $retraitAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Compte::class, inversedBy="transactions")
+     * @ORM\ManyToOne(targetEntity=Compte::class, inversedBy="transactionDepots")
      */
-    private $compte;
+    private $compteDepot;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Compte::class, inversedBy="transactionRetraits")
+     */
+    private $compteRetrait;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="retraitClients", cascade={"persist"})
-     * @Groups({"post:client","put:trans"})
+     * @Groups({"post:client","put:trans","get:retrait","get:allTrans"})
      */
     private $retraitClient;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="depotClients", cascade={"persist"})
-     * @Groups({"post:client"})
+     * @Groups({"post:client","get:retrait","get:allTrans"})
      */
     private $depotClient;
 
@@ -138,11 +154,20 @@ class Transaction
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"get:allTrans"})
      */
     private $frais;
 
+    /**
+     * @Groups({"get:retrait", "get:trans"})
+     */
+    private $montantRetrait;
 
 
+
+    public function __construct()
+    {
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -257,14 +282,26 @@ class Transaction
     }
 
 
-    public function getCompte(): ?Compte
+    public function getCompteDepot(): ?Compte
     {
-        return $this->compte;
+        return $this->compteDepot;
     }
 
-    public function setCompte(?Compte $compte): self
+    public function setCompteDepot(?Compte $compteDepot): self
     {
-        $this->compte = $compte;
+        $this->compteDepot = $compteDepot;
+
+        return $this;
+    }
+
+    public function getCompteRetrait(): ?Compte
+    {
+        return $this->compteRetrait;
+    }
+
+    public function setCompteRetrait(?Compte $compteRetrait): self
+    {
+        $this->compteRetrait = $compteRetrait;
 
         return $this;
     }
@@ -325,6 +362,18 @@ class Transaction
     public function setFrais(float $frais): self
     {
         $this->frais = $frais;
+
+        return $this;
+    }
+
+    public function getMontantRetrait(): ?float
+    {
+        return $this->montant - $this->frais; 
+    }
+
+    public function setMontantRetrait(float $montantRetrait): self
+    {
+        $this->montantRetrait = $montantRetrait;
 
         return $this;
     }

@@ -68,9 +68,16 @@ class Compte
     private $createAt;
 
     /**
-     * @ORM\OneToMany(targetEntity=Transaction::class, mappedBy="compte")
+     * @ORM\OneToMany(targetEntity=Transaction::class, mappedBy="compteDepot")
+     * @Groups({"get:allTrans", "get:comp:ag"})
      */
-    private $transactions;
+    private $transactionDepots;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Transaction::class, mappedBy="compteRetrait")
+     * @Groups({"get:allTrans", "get:comp:ag"})
+     */
+    private $transactionRetraits;
 
     /**
      * @ORM\OneToMany(targetEntity=Depot::class, mappedBy="compte")
@@ -94,7 +101,8 @@ class Compte
 
     public function __construct()
     {
-        $this->transactions = new ArrayCollection();
+        $this->transactionDepots = new ArrayCollection();
+        $this->transactionRetraits = new ArrayCollection();
         $this->depots = new ArrayCollection();
     }
 
@@ -142,27 +150,57 @@ class Compte
     /**
      * @return Collection|Transaction[]
      */
-    public function getTransactions(): Collection
+    public function getTransactionDepots(): Collection
     {
-        return $this->transactions;
+        return $this->transactionDepots;
     }
 
-    public function addTransaction(Transaction $transaction): self
+    public function addTransactionDepot(Transaction $transactionDepot): self
     {
-        if (!$this->transactions->contains($transaction)) {
-            $this->transactions[] = $transaction;
-            $transaction->setCompte($this);
+        if (!$this->transactionDepots->contains($transactionDepot)) {
+            $this->transactionDepots[] = $transactionDepot;
+            $transactionDepot->setCompte($this);
         }
 
         return $this;
     }
 
-    public function removeTransaction(Transaction $transaction): self
+    public function removeTransactionDepot(Transaction $transactionDepot): self
     {
-        if ($this->transactions->removeElement($transaction)) {
+        if ($this->transactionDepots->removeElement($transactionDepot)) {
             // set the owning side to null (unless already changed)
-            if ($transaction->getCompte() === $this) {
-                $transaction->setCompte(null);
+            if ($transactionDepot->getCompte() === $this) {
+                $transactionDepot->setCompte(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactionRetraits(): Collection
+    {
+        return $this->transactionRetraits;
+    }
+
+    public function addTransactionRetrait(Transaction $transactionRetrait): self
+    {
+        if (!$this->transactionRetraits->contains($transactionRetrait)) {
+            $this->transactionRetraits[] = $transactionRetrait;
+            $transactionRetrait->setCompte($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionRetrait(Transaction $transactionRetrait): self
+    {
+        if ($this->transactionRetraits->removeElement($transactionRetrait)) {
+            // set the owning side to null (unless already changed)
+            if ($transactionRetrait->getCompte() === $this) {
+                $transactionRetrait->setCompte(null);
             }
         }
 

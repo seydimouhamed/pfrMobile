@@ -44,6 +44,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *                "security"="(object.adminAgence==user or is_granted('ROLE_AdminSysteme'))",
  *                  "security_message"="Acces non autorisé",
  *          },
+ *           "get_agence_id_transactions"={ 
+ *               "method"="GET", 
+ *               "path"="/agences/{id}/transactions",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "normalization_context"={"groups"={"get_trans_agence", "get:allTrans","get:trans","resume"}},
+ *                "security"="(object.adminAgence==user or is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
+ *           "get_agence_id_commissions"={ 
+ *               "method"="GET", 
+ *               "path"="/agences/{id}/commissions",
+ *                "defaults"={"id"=null},
+ *                "requirements"={"id"="\d+"},
+ *                "normalization_context"={"groups"={"get:util:ag", "get:comp:ag", "getcom"}},
+ *                "security"="(object.adminAgence==user or is_granted('ROLE_AdminSysteme'))",
+ *                  "security_message"="Acces non autorisé",
+ *          },
  *            "modifier_agence_id"={ 
  *               "method"="PUT", 
  *               "path"="/agences/{id}",
@@ -89,6 +107,7 @@ class Agence
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"util"})
      */
     private $id;
 
@@ -112,13 +131,13 @@ class Agence
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="agence")
-     * @Groups({"user:read"})
+     * @Groups({"user:read", "getTrans"})
      */
     private $users;
 
     /**
      * @ORM\OneToOne(targetEntity=Compte::class, cascade={"persist", "remove"})
-     * @Groups({"post:agence","util"})
+     * @Groups({"post:agence","util","get_trans_agence","get:util:ag"})
      */
     private $compte;
 
@@ -134,7 +153,7 @@ class Agence
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
-     * @Groups({"post:agence"})
+     * @Groups({"post:agence", "getTrans"})
      */
     public $adminAgence;
 

@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RetraitPage } from './retrait.page';
 import { PanelComponentModule } from '../panel/panel.module';
 
@@ -15,6 +15,8 @@ import { RetraitPageRoutingModule } from './retrait-routing.module';
     IonicModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
     SuperTabsModule,
     PanelComponentModule,
     DynamicModule,

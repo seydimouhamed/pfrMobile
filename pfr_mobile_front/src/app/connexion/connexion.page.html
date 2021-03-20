@@ -4,15 +4,17 @@
   <app-panel name="Login" index=1 ></app-panel>
   <br><br>
   <div class="w_80">
-    <form (ngSubmit)="logForm()">
+    <form (ngSubmit)="logForm()" [formGroup]="form">
       <ion-item>
         <ion-label position="floating">Téléphone</ion-label>
-        <ion-input type="text"  name="title"></ion-input>
+        <ion-input type="text"  name="title" formControlName="username"></ion-input>
+        <small class="red" *ngIf="submitted && f.username.errors">le numéro  est obligatoire</small>
       </ion-item>
         <br>
       <ion-item>
         <ion-label position="floating">Password</ion-label>
-        <ion-input type="password"  name="password"></ion-input>
+        <ion-input type="password"  name="password" formControlName="password"></ion-input>
+        <small class="red" *ngIf="submitted && f.password.errors">le mot de passe  est obligatoire</small>
       </ion-item>
         <br>
       <div class="mp_forget">

@@ -20,7 +20,8 @@
     <form>
       <ion-item>
         <ion-label position="floating">Code</ion-label>
-        <ion-input type="text"  name="fistname" value="234-219-203"></ion-input>
+        <ion-input type="text"  name="fistname" [formControl]="codeCtrl"></ion-input>
+        <button clear slot="end" (click)="getDataTransaction()"><ion-icon name="sync-outline"></ion-icon></button>
       </ion-item>
     </form>
   </div>
@@ -34,7 +35,7 @@
         <ion-label>Emetteur</ion-label>
       </super-tab-button>
     </super-tabs-toolbar>
-    <super-tabs-container>
+    <super-tabs-container *ngIf="data">
       <super-tab>
         <ion-content>
           <br>
@@ -42,27 +43,27 @@
             <form >
               <ion-item>
                 <ion-label position="floating">N° CNI</ion-label>
-                <ion-input type="text"  name="fistname" ></ion-input>
+                <ion-input type="text"  name="fistname" [formControl]="cniRetrait"></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">NOM & PRÉNOM</ion-label>
-                <ion-input  name="telephone" value="Seydina BASSE" disabled></ion-input>
+                <ion-input  name="telephone" [value]="data.retraitClient.nomComplet" disabled></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">MONTANT À RECEVOIR</ion-label>
-                <ion-input  name="telephone" value="350 000" disabled></ion-input>
+                <ion-input  name="telephone" [value]="data.montant"  disabled></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">Téléphone</ion-label>
-                <ion-input  name="fistname" value="77 008 08 08" disabled></ion-input>
+                <ion-input type="number" name="fistname" [value]="data.retraitClient.telephone" disabled></ion-input>
               </ion-item>
               <ion-item>
                 <ion-label position="floating">DATE D'ENVOI</ion-label>
-                <ion-input  name="nom"  value="2020-02-23" disabled></ion-input>
+                <ion-input  name="nom"  [value]="data.dateAt | date :'MM/dd/yyyy'" disabled></ion-input>
               </ion-item>
               <br>
               <br>
-              <button ion-button class="button p_bottom"  block>Retiter</button>
+              <button ion-button class="button p_bottom" (click)="doneRetrait()" block>Retiter</button>
             </form>
           </div>
         </ion-content>
@@ -74,28 +75,29 @@
             <form >
               <ion-item>
                 <ion-label position="floating">N° CNI</ion-label>
-                <ion-input type="text"  name="fistname" value="1 291 1998 23 221" disabled></ion-input>
+                <!--1693659604734975-->
+                <ion-input type="text"  name="fistname" [value]="data.depotClient.cni"  disabled></ion-input>
               </ion-item>
             <ion-item>
               <ion-label position="floating">NOM PRÉNOM</ion-label>
-              <ion-input type="text"  name="nom" value="DIALLO Saliou" disabled></ion-input>
+              <ion-input type="text"  name="nom" [value]="data.depotClient.nomComplet"  disabled></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">MONTANT ENVOYÉ</ion-label>
-              <ion-input type="text"  name="telephone" value="350 000" disabled></ion-input>
+              <ion-input type="text"  name="telephone" [value]="data.montantRetrait" disabled></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">TÉLÉPHONE</ion-label>
-              <ion-input type="text"  name="telephone" value="77 008 08 08" disabled></ion-input>
+              <ion-input type="text"  name="telephone" [value]="data.depotClient.telephone" disabled></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">DATE D'ENVOI</ion-label>
-              <ion-input type="text"  name="telephone" value="2020-02-23" disabled></ion-input>
+              <ion-input type="text"  name="telephone" [value]="data.dateAt | date :'MM/dd/yyyy'" disabled></ion-input>
             </ion-item>
 
             <br>
             <br>
-              <button ion-button class="button p_bottom"  block>Retiter</button>
+              <button ion-button class="button p_bottom" (click)="doneRetrait()" block>Retiter</button>
             </form>
           </div>
         </ion-content>

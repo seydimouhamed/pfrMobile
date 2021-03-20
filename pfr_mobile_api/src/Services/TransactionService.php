@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Services\SendSms;
 use App\Repository\FraisRepository;
 use App\Repository\TransactionRepository;
 use Symfony\Component\Security\Core\Security;
@@ -19,8 +20,12 @@ class TransactionService
     private $repo;
     private $fraisRepo;
     private $security;
+    private $agenceRepository;
+    private $sendSms;
 
     public function __construct(
+        SendSms $sendSms,
+        \App\Repository\AgenceRepository $agenceRepository,
         FraisRepository $fraisRepo,
         IriConverterInterface $_iriconverter,
         SerializerInterface $_serializer,
@@ -31,6 +36,8 @@ class TransactionService
         $this->repo = $repo;
         $this->fraisRepo = $fraisRepo;
         $this->security = $security;
+        $this->agenceRepository = $agenceRepository;
+        $this->sendSms = $sendSms;
     }
 
     public function postTransaction($data)
@@ -53,19 +60,28 @@ class TransactionService
         ->setPartDepot($partDepot)
         ->setFrais($frais)
         ->setPartRetrait($frais*2/10);
+        
+        // mettre compte retrait
+        $data->setCompteDepot($currentUser->getAgence()->getCompte());
 
         $this->updateSolde($data->getMontant(), $partDepot);
-         
+        
          return $data;
     }
 
     public function putTransaction($data)
     {
+        // dd($data);
         $currentUser=$this->security->getUser();
         $montantRetrait= $data->getMontant() - $data->getFrais();
         $partRetrait= $data->getPartRetrait();
         $data->setAgentRetrait($currentUser);
         $data->setRetraitAt($this->getCurrentDateTime());
+
+
+        // mettre compte Depot
+        $data->setCompteRetrait($currentUser->getAgence()->getCompte());
+        
         $this->updateSolde($montantRetrait,$partRetrait,"retrait" );
 
         return $data;
@@ -74,8 +90,8 @@ class TransactionService
 
     public function getCode(){
 
-        // return random_bytes($nbr);
-        return hexdec(\uniqid());
+        // return base64_encode(random_bytes($nbr));
+         return hexdec(\uniqid());
     }
 
     public function getCurrentDateTime(){
@@ -111,6 +127,9 @@ class TransactionService
        // actualiser solde
        $compte->setSolde($newSolde);
 
+    //    // Mettre le compte
+    //    $data->setCompteDepot($compte);
+       
        // setUser
        $data->setUser($currentUser)
             ->setDateAt($this->getCurrentDateTime());
@@ -120,8 +139,10 @@ class TransactionService
     public function putDepot($data, $previousMontant){
        $compte = $data->getCompte();
        $updatemnt = $data->getMontant();
+       
        $newSolde = ($compte->getSolde() - $previousMontant) + $updatemnt;
        $compte->setSolde($newSolde);
+
        return;
     }
     public function cancelDepot($data){
@@ -135,4 +156,49 @@ class TransactionService
         return;
     }
 
+    public function getAgenceTransactions($id){
+       $agence=$this->agenceRepository->findAgenceIdTransactions($id);
+       $transactions=[];
+
+       // get Admin agence dépots
+        $transactions[] = $agence->getAdminAgence()->getDepotAgents();
+        $transactions[] = $agence->getAdminAgence()->getRetraitAgents();
+        $users= $agence->getUsers();
+       // get Users agent depot and retraits
+       foreach($users as $us){
+        if($us->getDepotAgents())  {
+            $transactions[]= $us->getDepotAgents();
+        }
+        if($us->getRetraitAgents())  {
+            $transactions[]= $us->getRetraitAgents();
+        }
+       }
+       return $transactions;
+    }
+
+
+
+    public function sendSMSDepot($data)
+    {
+       // dd($data->getCode());
+        $d=$this->sendSms->sendSms($data->getRetraitClient()->getTelephone(), $data->getDepotClient()->getNomComplet().' vient de vous transferer '.$data->getMontant().'F cfa. Code:'.$data->getCode().' A retirer dans une agence Facile-Money!Lol');
+   
+        
+    }
+
+    public function sendSMSRetrait($data)
+    {
+       // dd($data->getCode());
+        $d=$this->sendSms->sendSms($data->getDepotClient()->getTelephone(), 'Les '.$data->getMontant().'F cfa. Envoyer à '.$data->getRetraitClient()->getNomComplet().' viennent d\'être retiré! Merci de votre Fidélité!');
+        
+    }
+
+
 }
+
+// $indece='CMP';
+    
+
+// $date=new \DateTime();
+
+// /* return $indece.date_format($date, 'Y').$this->numero */

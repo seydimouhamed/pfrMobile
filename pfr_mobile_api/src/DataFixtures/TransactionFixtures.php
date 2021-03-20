@@ -28,17 +28,26 @@ class TransactionFixtures extends Fixture implements DependentFixtureInterface
             $transaction= new Transaction();
             $time = new \DateTime();
             $time->format('H:i:s \O\n Y-m-d');
-            $montant = 5500;
-            $frais = 500;
-            $transaction->setCompte($this->getReference(AgenceFixtures::getReferenceCompteKey($faker->numberBetween(1,9))));
-            $client = new Client();
-            $client->setTelephone($faker->phoneNumber())
-                    ->setCni('11211221211')
-                    ->setnomComplet('Client depot'.$i);
+            $montant = 50000;
+            $frais = 2500;
+            $transaction->setCompteDepot($this->getReference(AgenceFixtures::getReferenceCompteKey($faker->numberBetween(1,9))));
+            
+            // client dépot
+            $clientDepot = new Client();
+            $clientDepot->setTelephone($faker->phoneNumber())
+                    ->setCni(''.(\random_int(10*pow(10, 16), 9.99999999 * pow(10, 17))))
+                    ->setnomComplet('Prenom NOMCD'.$i);
+                
+            // client dépot
+            $clientRetrait = new Client();
+            $clientRetrait->setTelephone($faker->phoneNumber())
+                        ->setCni(''.(\random_int(10*pow(10, 16), 9.99999999 * pow(10, 17))))
+                        ->setnomComplet('Prenom NOMCR'.$i);
+
             $transaction->setAgentDepot($this->getReference(UserFixtures::getReferenceUserAgenceKey($faker->numberBetween(1,20))))
-                         ->setDepotClient($client)
-                         ->setType('depot')
-                         ->setCode('celkdqjskdsqklqsdkmlqsdmqsd')
+                         ->setDepotClient($clientDepot)
+                         ->setRetraitClient($clientRetrait)
+                         ->setCode(''.(\random_int(pow(10, 9), 9.99999999 * pow(10, 10))))
                          ->setDateAt($time)
                          ->setMontant($montant)
                          ->setFrais($frais)
@@ -51,4 +60,18 @@ class TransactionFixtures extends Fixture implements DependentFixtureInterface
          }
         $manager->flush();
     }
+
+    // public function getCode($nbr){
+
+    //     dd(base64_encode(random_bytes($nbr)));
+    //     // return hexdec(\uniqid());
+    // }
+
+    // public function secure_rand($min, $max)
+    // {
+    //     $nbr= \random_int($min, $max);
+    //    dd($nbr);
+
+    //    return $nbr;
+    //}
 }

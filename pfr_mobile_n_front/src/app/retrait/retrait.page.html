@@ -1,0 +1,109 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Tab 2
+    </ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Retrait</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-panel name="Retrait" home="true"  index=0 icone="return-up-back-outline"></app-panel>
+
+  <br>
+  <div class="w_80">
+    <form>
+      <ion-item>
+        <ion-label position="floating">Code</ion-label>
+        <br>
+        <ion-input type="text"  name="fistname" [formControl]="codeCtrl" class="input"></ion-input>
+        <button clear slot="end" (click)="getDataTransaction()" class="icon"><ion-icon name="sync-outline" ></ion-icon></button>
+      </ion-item>
+    </form>
+  </div>
+  <br>
+  <super-tabs>
+    <super-tabs-toolbar class="tab-header" slot="top">
+      <super-tab-button>
+        <ion-label>Bénéficiaire</ion-label>
+      </super-tab-button>
+      <super-tab-button>
+        <ion-label>Emetteur</ion-label>
+      </super-tab-button>
+    </super-tabs-toolbar>
+    <super-tabs-container *ngIf="data">
+      <super-tab>
+        <ion-content>
+          <br>
+          <div class="w_80">
+            <form >
+              <ion-item>
+                <ion-label position="floating">N° CNI</ion-label>
+                <br>
+                <ion-input type="text"  name="fistname" [formControl]="cniRetrait" class="input"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">NOM & PRÉNOM</ion-label>
+                <ion-input  name="telephone" [value]="data.retraitClient.nomComplet" disabled></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">MONTANT À RECEVOIR</ion-label>
+                <ion-input  name="telephone" [value]="data.montantRetrait"  disabled></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Téléphone</ion-label>
+                <ion-input type="number" name="fistname" [value]="data.retraitClient.telephone" disabled></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">DATE D'ENVOI</ion-label>
+                <ion-input  name="nom"  [value]="data.dateAt | date :'MM/dd/yyyy'" disabled></ion-input>
+              </ion-item>
+              <br>
+              <br>
+              <button ion-button class="button p_bottom" (click)="doneRetrait()" block>Retiter</button>
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+      <super-tab>
+        <ion-content>
+          <br>
+          <div class="w_80">
+            <form >
+              <ion-item>
+                <ion-label position="floating">N° CNI</ion-label>
+                <!--1693659604734975-->
+                <ion-input type="text"  name="fistname" [value]="data.depotClient.cni"  disabled></ion-input>
+              </ion-item>
+            <ion-item>
+              <ion-label position="floating">NOM PRÉNOM</ion-label>
+              <ion-input type="text"  name="nom" [value]="data.depotClient.nomComplet"  disabled></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">MONTANT ENVOYÉ</ion-label>
+              <ion-input type="text"  name="telephone" [value]="data.montantRetrait" disabled></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">TÉLÉPHONE</ion-label>
+              <ion-input type="text"  name="telephone" [value]="data.depotClient.telephone" disabled></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">DATE D'ENVOI</ion-label>
+              <ion-input type="text"  name="telephone" [value]="data.dateAt | date :'MM/dd/yyyy'" disabled></ion-input>
+            </ion-item>
+
+            <br>
+            <br>
+              <button ion-button class="button p_bottom" (click)="doneRetrait()" block>Retiter</button>
+            </form>
+          </div>
+        </ion-content>
+      </super-tab>
+    </super-tabs-container>
+  </super-tabs>
+</ion-content>

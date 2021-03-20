@@ -1,0 +1,74 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Tab 2
+    </ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Transactions</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-panel name="Toutes les transactions" icone="sync-sharp" index=0 ></app-panel>
+<br>
+  <ion-list class="w_96">
+    <ion-item>
+      <!--  <ion-icon  class="primary"  name="return-up-forward-outline" start></ion-icon>
+              &nbsp;&nbsp;
+              <ion-label>
+                Dépot
+              </ion-label>
+            <ion-icon class="primary" name="chevron-forward-outline" item-end></ion-icon>
+       -->
+       <ion-grid>
+        <!-- <ion-row>
+          <ion-col>
+            1 of 2
+          </ion-col>
+          <ion-col>
+            2 of 2
+          </ion-col>
+        </ion-row> -->
+        <ion-row>
+          <ion-col>
+            <small (click)="sortByDate()" class="ronded_10"><b>Date<ion-icon name="caret-down-outline" class="secondary"></ion-icon></b></small>
+          </ion-col>
+          <ion-col>
+            <small (click)="sortByWord()" class="ronded_10"><b>Utilisateur<ion-icon name="caret-down-outline" class="secondary"></ion-icon></b></small>
+          </ion-col>
+          <ion-col>
+            <small class="ronded_10"><b>Type</b></small>
+          </ion-col>
+          <ion-col>
+            <small  (click)="sortByMontant()" class="ronded_10"><b>Montant <ion-icon name="caret-down-outline" class="secondary"></ion-icon></b></small>
+          </ion-col>
+          <ion-col>
+            <small class="ronded_10"><b>Frais</b></small>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngFor="let trans of viewsTransaction">
+          <ion-col>
+            <small>{{ trans['date'] | date :'MM/dd/yy'}}</small>
+          </ion-col>
+          <ion-col>
+            <small >{{ trans['nomComplet'] }}</small>
+          </ion-col>
+          <ion-col>
+            <small>{{ trans['type'] }}</small>
+          </ion-col>
+          <ion-col>
+            <small >{{ trans['montant']}}</small>
+          </ion-col>
+          <ion-col>
+            <small *ngIf="trans['type']==='depot'">{{ trans['frais']}}</small>
+            <small *ngIf="trans['type']==='retrait'">--</small>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+</ion-content>

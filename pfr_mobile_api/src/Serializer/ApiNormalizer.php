@@ -38,7 +38,7 @@ final class ApiNormalizer implements NormalizerInterface, DenormalizerInterface,
 
     public function supportsDenormalization($data, $type, $format = null)
     {
-        dd($data);
+        // dd($data);
         return $this->decorated->supportsDenormalization($data, $type, $format);
     }
 

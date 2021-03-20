@@ -1,0 +1,6 @@
+<ion-item>
+  <ion-label>{{field.label}}</ion-label>
+  <ion-select [placeholder]="field.label" [formControlName]="field.name" okText="Ok" cancelText="Fermer">
+    <ion-select-option *ngFor="let item of field.options" [value]="item">{{item}}</ion-select-option>
+  </ion-select>
+</ion-item>

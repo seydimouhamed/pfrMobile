@@ -1,0 +1,36 @@
+.w_80{
+  width: 80%;
+  margin-left: 10%;
+}
+
+.button{
+
+  padding: 20px;
+  background-color:#07AEEF;
+  color: white;
+  font-size: 25px;
+  width: 80%;
+  margin-left: 10%;
+  border-radius: 30px;
+}
+
+.input{
+  border-radius: 30px;
+  background: #e0e0e0;
+  box-shadow: inset 6px 6px 11px #bebebe,
+            inset -6px -6px 11px #ffffff;
+}
+.p_bottom {
+  position: fixed;
+  left: 0;
+  bottom: 20px;
+  right: 0;
+  border-radius: 24px;
+  color:#b5b5b5;
+  background: #e0e0e0;
+  box-shadow:  6px 6px 11px #bebebe,
+             -6px -6px 11px #ffffff;
+}
+.mp_forget{
+  color:#07AEEF;
+}

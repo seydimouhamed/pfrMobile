@@ -1,0 +1,26 @@
+
+<ion-content [fullscreen]="true" no-scroll>
+
+  <app-panel name="Login" index=1 ></app-panel>
+  <br><br>
+  <div class="w_80">
+    <form (ngSubmit)="logForm()" [formGroup]="form">
+      <ion-item>
+        <!-- <ion-label position="floating">Téléphone</ion-label> -->
+        <ion-input type="text"  name="title" formControlName="username"  class="input"></ion-input>
+      </ion-item>
+      <small class="red" *ngIf="submitted && f.username.errors">le numéro  est obligatoire</small>
+        <br>
+      <ion-item>
+        <!-- <ion-label position="floating">Password</ion-label> -->
+        <ion-input type="password"  name="password" formControlName="password"  class="input"></ion-input>
+      </ion-item>
+      <small class="red" *ngIf="submitted && f.password.errors">le mot de passe  est obligatoire</small>
+        <br>
+      <div class="mp_forget">
+        Mot de passe oublié ?
+      </div>
+      <button ion-button class="button p_bottom" type="submit" block>Se connecter</button>
+    </form>
+  </div>
+</ion-content>
